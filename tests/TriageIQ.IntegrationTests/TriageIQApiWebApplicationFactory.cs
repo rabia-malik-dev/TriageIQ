@@ -77,6 +77,9 @@ public sealed class TriageIQApiWebApplicationFactory : WebApplicationFactory<Pro
                 ["Jwt:Issuer"] = "TriageIQ",
                 ["Jwt:Audience"] = "TriageIQ",
                 ["ServiceBus:EmulatorHealthUrl"] = string.Empty,
+                ["Llm:Provider"] = "fake",
+                ["Llm:Model"] = "fake-triage-v1",
+                ["Triage:ConfidenceThreshold"] = "0.85",
             });
         });
     }
