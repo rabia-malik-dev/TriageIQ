@@ -22,6 +22,6 @@ TriageIQ uses a layered backend under `src/`:
 
 The API readiness probe checks SQL Server and the Service Bus emulator health URL when configured.
 
-**M1:** JWT auth, users, tickets (EF migrations on startup). **M2:** transactional outbox, API publisher to `tickets.incoming`, worker consumer → `QueuedForTriage`. **Development:** Swagger at `/swagger` — see [LOCAL_SETUP.md](./LOCAL_SETUP.md).
+**M1:** JWT auth, users, tickets (EF migrations on startup). **M2:** transactional outbox, API publisher to `tickets.incoming`, worker consumer → `QueuedForTriage`. **M3:** fake `ILlmClient`, `TicketAnalyses` + `LlmCalls`, `GET .../analysis`. **Development:** Swagger at `/swagger` — see [LOCAL_SETUP.md](./LOCAL_SETUP.md).
 
 Full message flow and components are defined in [SPEC.md](./SPEC.md).
