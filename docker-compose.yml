@@ -75,6 +75,8 @@ services:
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
       ServiceBus__EmulatorHealthUrl: http://servicebus-emulator:5300/health
+      ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
+      ServiceBus__IncomingQueueName: tickets.incoming
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -91,12 +93,16 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Development
       ConnectionStrings__Default: Server=sqlserver,1433;Database=TriageIQ;User Id=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
+      ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
+      ServiceBus__IncomingQueueName: tickets.incoming
     depends_on:
       sqlserver:
         condition: service_healthy
       sqlserver-init:
         condition: service_completed_successfully
       servicebus-emulator:
+        condition: service_started
+      api:
         condition: service_started
 
 volumes:

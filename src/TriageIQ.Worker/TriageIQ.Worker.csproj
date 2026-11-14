@@ -8,4 +8,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TriageIQ.Application\TriageIQ.Application.csproj" />
+    <ProjectReference Include="..\TriageIQ.Infrastructure\TriageIQ.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
