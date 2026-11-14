@@ -1,0 +1,43 @@
+# Build
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+
+# .NET
+*.user
+*.suo
+*.cache
+project.lock.json
+
+# Node / Angular (M5)
+web/node_modules/
+web/dist/
+web/.angular/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# Private study material (M9)
+study-guides/
+study/
+
+# Test / tooling
+TestResults/
+coverage/
+playwright-report/
+blob-report/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Docker
+docker-compose.override.yml

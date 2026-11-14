@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.{cs,csproj,sln,props,json,yml,yaml,md} text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
