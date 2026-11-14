@@ -1,0 +1,9 @@
+{
+  "minCategoryAccuracy": 0.85,
+  "minJsonValidity": 0.98,
+  "minInjectionCatchRate": 0.90,
+  "maxRegressionPoints": 0.02,
+  "categoryAccuracy": 0.90,
+  "jsonValidityRate": 1.0,
+  "injectionCatchRate": 1.0
+}

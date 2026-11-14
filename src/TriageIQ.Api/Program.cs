@@ -3,6 +3,7 @@ using TriageIQ.Api.OpenApi;
 using TriageIQ.Application;
 using TriageIQ.Infrastructure;
 using TriageIQ.Application.Abstractions.Persistence;
+using TriageIQ.Infrastructure.Observability;
 using TriageIQ.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,19 @@ builder.Services.AddOpenApi();
 builder.Services.AddTriageIqSwagger();
 builder.Services.AddHttpClient();
 builder.Services.AddProblemDetails();
+builder.Services.AddTriageOpenTelemetry(builder.Configuration, builder.Environment, "TriageIQ.Api");
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<TriageIQ.Application.Abstractions.ICurrentUser, TriageIQ.Api.Services.HttpContextCurrentUser>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Web", policy =>
+        policy.WithOrigins(
+                "http://localhost:4200",
+                "http://localhost:8081",
+                "http://localhost")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var jwtSigningKey = builder.Configuration["Jwt:SigningKey"];
 if (!builder.Environment.IsEnvironment("Testing") &&
@@ -59,6 +73,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors("Web");
 app.UseAuthentication();
 app.UseAuthorization();
 

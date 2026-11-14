@@ -2,7 +2,7 @@
 
 Event-driven AI ticket triage platform with guardrails, human review, and automated evaluation (.NET, Angular, Azure Service Bus, SQL Server, OpenTelemetry).
 
-**Status:** Milestone M4 (LLM triage + guardrails, review routing, `ReviewReason` on analysis). Angular review UI and cloud LLM providers are M5+.
+**Status:** Milestones **M0–M9** (review UI, eval CI gate, OpenTelemetry profile, GHCR release workflow, study-guide tooling). Cloud LLM provider wiring remains configuration-driven beyond the local dev client.
 
 Full product specification: [docs/SPEC.md](docs/SPEC.md).  
 **Step-by-step local run and Swagger testing:** [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).

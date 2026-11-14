@@ -1,0 +1,20 @@
+{
+  "uid": "triageiq-overview",
+  "title": "TriageIQ Overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Review queue (query API)",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 0 },
+      "targets": []
+    },
+    {
+      "type": "timeseries",
+      "title": "OTLP metrics (via collector)",
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 0 },
+      "targets": []
+    }
+  ]
+}

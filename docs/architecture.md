@@ -9,7 +9,8 @@ TriageIQ uses a layered backend under `src/`:
 | Infrastructure | `TriageIQ.Infrastructure` | External systems, health checks, DI wiring |
 | API | `TriageIQ.Api` | HTTP controllers, OpenAPI, Swagger UI (Development) |
 | Worker | `TriageIQ.Worker` | Background processing (scaffold in M0) |
-| Evals | `TriageIQ.Evals` | Evaluation CLI (scaffold; M6) |
+| Evals | `TriageIQ.Evals` | Replay/live evaluation CLI (M6) |
+| Web | `web/` | Angular review UI behind Nginx (M5) |
 
 ## Local runtime (M0)
 

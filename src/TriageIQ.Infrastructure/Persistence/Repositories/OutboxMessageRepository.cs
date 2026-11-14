@@ -41,4 +41,7 @@ public sealed class OutboxMessageRepository(TriageIQDbContext db) : IOutboxMessa
 
         await db.SaveChangesAsync(cancellationToken);
     }
+
+    public Task<int> CountPendingAsync(CancellationToken cancellationToken) =>
+        db.OutboxMessages.CountAsync(o => o.Status == OutboxMessageStatus.Pending, cancellationToken);
 }

@@ -9,4 +9,6 @@ public interface IOutboxMessageRepository
     Task MarkPublishedAsync(Guid outboxId, DateTimeOffset publishedAt, CancellationToken cancellationToken);
 
     Task MarkFailedAsync(Guid outboxId, string error, CancellationToken cancellationToken);
+
+    Task<int> CountPendingAsync(CancellationToken cancellationToken);
 }

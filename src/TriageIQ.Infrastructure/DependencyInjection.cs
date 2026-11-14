@@ -43,6 +43,11 @@ public static class DependencyInjection
             services.AddScoped<IPromptVersionRepository, PromptVersionRepository>();
             services.AddScoped<ITriagePersistence, TriagePersistence>();
             services.AddScoped<ITicketAnalysisReadRepository, TicketAnalysisReadRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
+            services.AddScoped<IEvalRunRepository, EvalRunRepository>();
+            services.AddScoped<IDlqRepository, DlqRepository>();
+            services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 

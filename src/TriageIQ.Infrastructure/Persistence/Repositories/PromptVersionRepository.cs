@@ -9,6 +9,29 @@ public sealed class PromptVersionRepository(TriageIQDbContext db) : IPromptVersi
     public const string DefaultPromptName = "ticket-triage";
     public const string DefaultPromptVersion = "v1";
 
+    public Task<PromptVersion?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        db.PromptVersions.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<PromptVersion>> ListAllAsync(CancellationToken cancellationToken) =>
+        await db.PromptVersions.AsNoTracking().OrderByDescending(p => p.CreatedAt).ToListAsync(cancellationToken);
+
+    public async Task AddAsync(PromptVersion promptVersion, CancellationToken cancellationToken)
+    {
+        db.PromptVersions.Add(promptVersion);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task SetActiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var all = await db.PromptVersions.ToListAsync(cancellationToken);
+        foreach (var prompt in all)
+        {
+            prompt.IsActive = prompt.Id == id;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<PromptVersion?> GetActiveAsync(CancellationToken cancellationToken)
     {
         var items = await db.PromptVersions.AsNoTracking()

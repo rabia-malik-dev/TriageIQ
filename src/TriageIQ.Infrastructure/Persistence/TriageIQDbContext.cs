@@ -17,6 +17,14 @@ public sealed class TriageIQDbContext(DbContextOptions<TriageIQDbContext> option
 
     public DbSet<LlmCall> LlmCalls => Set<LlmCall>();
 
+    public DbSet<ReviewAction> ReviewActions => Set<ReviewAction>();
+
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    public DbSet<EvalRun> EvalRuns => Set<EvalRun>();
+
+    public DbSet<DlqMessage> DlqMessages => Set<DlqMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TriageIQDbContext).Assembly);

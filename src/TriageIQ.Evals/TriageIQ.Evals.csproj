@@ -8,4 +8,8 @@
     <ProjectReference Include="..\TriageIQ.Application\TriageIQ.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\eval\datasets\**\*" LinkBase="eval\datasets" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,1 @@
+export const ACCESS_TOKEN_STORAGE_KEY = 'triageiq_access_token';

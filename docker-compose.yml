@@ -81,6 +81,7 @@ services:
       ServiceBus__EmulatorHealthUrl: http://servicebus-emulator:5300/health
       ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
       ServiceBus__IncomingQueueName: tickets.incoming
+      OpenTelemetry__OtlpEndpoint: http://otel-collector:4317
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -103,6 +104,7 @@ services:
       Llm__Model: triage-local-v1
       Triage__ConfidenceThreshold: 0.85
       Triage__MaxEstimatedCostUsd: 0.25
+      OpenTelemetry__OtlpEndpoint: http://otel-collector:4317
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -112,6 +114,59 @@ services:
         condition: service_started
       api:
         condition: service_started
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: triageiq-web
+    ports:
+      - "${WEB_PORT:-8081}:80"
+    depends_on:
+      api:
+        condition: service_started
+
+  otel-collector:
+    profiles: ["observability"]
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    container_name: triageiq-otel-collector
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./deploy/otel/collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "8889:8889"
+
+  jaeger:
+    profiles: ["observability"]
+    image: jaegertracing/all-in-one:1.64
+    container_name: triageiq-jaeger
+    ports:
+      - "16686:16686"
+
+  prometheus:
+    profiles: ["observability"]
+    image: prom/prometheus:v3.1.0
+    container_name: triageiq-prometheus
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    profiles: ["observability"]
+    image: grafana/grafana:11.4.0
+    container_name: triageiq-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    volumes:
+      - ./deploy/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
 
 volumes:
   triageiq-sql-data:

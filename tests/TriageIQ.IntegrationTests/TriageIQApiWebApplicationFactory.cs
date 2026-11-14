@@ -37,6 +37,7 @@ public sealed class TriageIQApiWebApplicationFactory : WebApplicationFactory<Pro
 
             using var scope = Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TriageIQDbContext>();
+            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
 
             if (!db.Users.Any(u => u.Email == AdminEmail))

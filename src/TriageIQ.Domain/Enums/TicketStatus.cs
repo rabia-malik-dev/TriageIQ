@@ -7,4 +7,6 @@ public enum TicketStatus
     AutoApproved = 2,
     NeedsReview = 3,
     Failed = 4,
+    ReviewApproved = 5,
+    Rejected = 6,
 }

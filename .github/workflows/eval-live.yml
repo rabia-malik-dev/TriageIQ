@@ -1,0 +1,26 @@
+name: Eval Live
+
+on:
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: Dataset name
+        required: true
+        default: triage-v1
+
+jobs:
+  eval-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Generate dataset
+        run: python tools/eval/generate_triage_v1.py
+      - name: Run live-mode placeholder
+        run: dotnet run --project src/TriageIQ.Evals/TriageIQ.Evals.csproj --configuration Release -- live ${{ inputs.dataset }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-live-report
+          path: eval/baselines/
