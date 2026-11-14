@@ -8,11 +8,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddOutboxPublishing();
+}
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddTriageIqSwagger();
 builder.Services.AddHttpClient();
 builder.Services.AddProblemDetails();
+
+var jwtSigningKey = builder.Configuration["Jwt:SigningKey"];
+if (!builder.Environment.IsEnvironment("Testing") &&
+    string.IsNullOrWhiteSpace(jwtSigningKey))
+{
+    throw new InvalidOperationException("JWT signing key is not configured.");
+}
 
 var app = builder.Build();
 

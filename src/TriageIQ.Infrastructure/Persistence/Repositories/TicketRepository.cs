@@ -14,25 +14,33 @@ public sealed class TicketRepository(TriageIQDbContext db) : ITicketRepository
     public Task<Ticket?> FindByIdAsync(Guid id, CancellationToken cancellationToken) =>
         db.Tickets.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
 
-    public async Task<Ticket> GetOrCreateAsync(Ticket ticket, CancellationToken cancellationToken)
+    public Task<Ticket?> FindByIdForUpdateAsync(Guid id, CancellationToken cancellationToken) =>
+        db.Tickets.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+
+    public async Task<TicketCreateResult> GetOrCreateAsync(
+        Ticket ticket,
+        OutboxMessage outboxForNewTicket,
+        CancellationToken cancellationToken)
     {
         var existing = await FindByIdempotencyKeyAsync(ticket.IdempotencyKey, cancellationToken);
         if (existing is not null)
         {
-            return existing;
+            return new TicketCreateResult(existing, IsNew: false);
         }
 
         await db.Tickets.AddAsync(ticket, cancellationToken);
+        await db.OutboxMessages.AddAsync(outboxForNewTicket, cancellationToken);
 
         try
         {
             await db.SaveChangesAsync(cancellationToken);
-            return ticket;
+            return new TicketCreateResult(ticket, IsNew: true);
         }
         catch (DbUpdateException ex) when (IsIdempotencyViolation(ex))
         {
             db.ChangeTracker.Clear();
-            return (await FindByIdempotencyKeyAsync(ticket.IdempotencyKey, cancellationToken))!;
+            var duplicate = (await FindByIdempotencyKeyAsync(ticket.IdempotencyKey, cancellationToken))!;
+            return new TicketCreateResult(duplicate, IsNew: false);
         }
     }
 

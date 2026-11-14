@@ -105,9 +105,34 @@ docker compose down
 dotnet test TriageIQ.slnx --configuration Release
 ```
 
-## 9. What is not available yet
+## 9. M2 — verify messaging (Docker)
 
-- **M2+:** outbox, worker consuming Service Bus, AI triage, Angular UI.
+After creating a ticket in Swagger:
+
+1. **SQL — outbox published:**
+   ```sql
+   USE TriageIQ;
+   SELECT Id, TicketId, Status, PublishedAt FROM OutboxMessages ORDER BY CreatedAt DESC;
+   ```
+   `Status` should become `Published` within a few seconds.
+
+2. **SQL — worker consumed message:**
+   ```sql
+   SELECT Id, Subject, Status FROM Tickets ORDER BY CreatedAt DESC;
+   ```
+   `Status` should change from `Received` to `QueuedForTriage`.
+
+3. **Worker logs:**
+   ```powershell
+   docker compose logs -f worker
+   ```
+   Look for: `Ticket {id} queued for triage`.
+
+4. **DLQ (manual / advanced):** emulator queue `tickets.incoming` uses `MaxDeliveryCount: 5` in `deploy/servicebus/Config.json`. Repeated handler failures abandon the message until Service Bus dead-letters it.
+
+## 10. What is not available yet
+
+- **M3+:** LLM triage, guardrails, Angular UI.
 - Swagger is **not** enabled in production; only Development/Docker local stack.
 
 See [SPEC.md](./SPEC.md) for the full milestone plan.

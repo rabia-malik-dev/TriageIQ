@@ -9,7 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using TriageIQ.Application.Abstractions;
 using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Application.Abstractions.Security;
+using TriageIQ.Application.Abstractions.Messaging;
 using TriageIQ.Infrastructure.Health;
+using TriageIQ.Infrastructure.Messaging;
 using TriageIQ.Infrastructure.Persistence;
 using TriageIQ.Infrastructure.Persistence.Repositories;
 using TriageIQ.Infrastructure.Security;
@@ -34,6 +36,7 @@ public static class DependencyInjection
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
@@ -50,7 +53,20 @@ public static class DependencyInjection
         }
 
         AddHealthChecks(services, configuration, environment);
+        AddMessaging(services, configuration, environment);
 
+        return services;
+    }
+
+    public static IServiceCollection AddOutboxPublishing(this IServiceCollection services)
+    {
+        services.AddHostedService<OutboxDispatchHostedService>();
+        return services;
+    }
+
+    public static IServiceCollection AddTicketConsumption(this IServiceCollection services)
+    {
+        services.AddHostedService<TicketIncomingConsumerHostedService>();
         return services;
     }
 
@@ -71,11 +87,6 @@ public static class DependencyInjection
 
         if (string.IsNullOrWhiteSpace(jwt.SigningKey))
         {
-            if (!environment.IsEnvironment("Testing"))
-            {
-                throw new InvalidOperationException("JWT signing key is not configured.");
-            }
-
             return;
         }
 
@@ -97,6 +108,32 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+    }
+
+    private static void AddMessaging(
+        IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
+    {
+        services.Configure<ServiceBusOptions>(configuration.GetSection(ServiceBusOptions.SectionName));
+
+        if (environment.IsEnvironment("Testing"))
+        {
+            services.AddSingleton<InMemoryMessageBus>();
+            services.AddSingleton<IMessageBus>(sp => sp.GetRequiredService<InMemoryMessageBus>());
+            return;
+        }
+
+        var connectionString = configuration.GetSection(ServiceBusOptions.SectionName)
+            .Get<ServiceBusOptions>()?.ConnectionString;
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            return;
+        }
+
+        services.AddSingleton<ServiceBusMessageBus>();
+        services.AddSingleton<IMessageBus>(sp => sp.GetRequiredService<ServiceBusMessageBus>());
     }
 
     private static void AddHealthChecks(
