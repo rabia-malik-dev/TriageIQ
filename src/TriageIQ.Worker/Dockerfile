@@ -2,16 +2,17 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY Directory.Build.props ./
-COPY src/TriageIQ.Domain/TriageIQ.Domain.csproj src/TriageIQ.Domain/
-COPY src/TriageIQ.Application/TriageIQ.Application.csproj src/TriageIQ.Application/
-COPY src/TriageIQ.Infrastructure/TriageIQ.Infrastructure.csproj src/TriageIQ.Infrastructure/
-COPY src/TriageIQ.Worker/TriageIQ.Worker.csproj src/TriageIQ.Worker/
+COPY src/TriageIQ.Domain/TriageIQ.Domain.csproj TriageIQ.Domain/
+COPY src/TriageIQ.Application/TriageIQ.Application.csproj TriageIQ.Application/
+COPY src/TriageIQ.Worker/TriageIQ.Worker.csproj TriageIQ.Worker/
 
-RUN dotnet restore src/TriageIQ.Worker/TriageIQ.Worker.csproj
+RUN dotnet restore TriageIQ.Worker/TriageIQ.Worker.csproj
 
-COPY src/ src/
+COPY src/TriageIQ.Domain/ TriageIQ.Domain/
+COPY src/TriageIQ.Application/ TriageIQ.Application/
+COPY src/TriageIQ.Worker/ TriageIQ.Worker/
 
-RUN dotnet publish src/TriageIQ.Worker/TriageIQ.Worker.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish TriageIQ.Worker/TriageIQ.Worker.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/runtime:10.0 AS final
 WORKDIR /app
