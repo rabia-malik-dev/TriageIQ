@@ -21,11 +21,14 @@ public static class DependencyInjection
 
         if (includeExternalDependencies)
         {
-            var connectionString = configuration.GetConnectionString("Default");
-            if (!string.IsNullOrWhiteSpace(connectionString))
+            var sqlHealthConnectionString =
+                configuration.GetConnectionString("Health")
+                ?? configuration.GetConnectionString("Default");
+
+            if (!string.IsNullOrWhiteSpace(sqlHealthConnectionString))
             {
                 healthChecks.AddSqlServer(
-                    connectionString,
+                    sqlHealthConnectionString,
                     name: "sqlserver",
                     tags: ["ready"]);
             }

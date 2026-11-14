@@ -20,6 +20,23 @@ services:
       retries: 12
       start_period: 30s
 
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: triageiq-sqlserver-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${SQLSERVER_SA_PASSWORD}
+    volumes:
+      - ./deploy/sqlserver/init-database.sql:/init.sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P "$$MSSQL_SA_PASSWORD" -C -i /init.sql
+    restart: "no"
+
   servicebus-sqledge:
     image: mcr.microsoft.com/azure-sql-edge:latest
     container_name: triageiq-servicebus-sqledge
@@ -58,6 +75,8 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+      sqlserver-init:
+        condition: service_completed_successfully
       servicebus-emulator:
         condition: service_started
 
@@ -72,6 +91,8 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+      sqlserver-init:
+        condition: service_completed_successfully
       servicebus-emulator:
         condition: service_started
 

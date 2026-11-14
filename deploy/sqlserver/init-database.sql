@@ -1,0 +1,5 @@
+IF DB_ID(N'TriageIQ') IS NULL
+BEGIN
+    CREATE DATABASE TriageIQ;
+END
+GO
