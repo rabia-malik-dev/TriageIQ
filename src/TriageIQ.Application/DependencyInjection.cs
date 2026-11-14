@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TriageIQ.Application.Auth;
 using TriageIQ.Application.Messaging;
 using TriageIQ.Application.Tickets;
+using TriageIQ.Application.Triage;
 using TriageIQ.Application.Validation;
 
 namespace TriageIQ.Application;
@@ -16,6 +17,8 @@ public static class DependencyInjection
         services.AddScoped<AuthService>();
         services.AddScoped<TicketService>();
         services.AddScoped<TicketIngestionService>();
+        services.AddScoped<TicketTriageService>();
+        services.AddScoped<TicketAnalysisQueryService>();
         services.AddScoped<IOutboxDispatcher, OutboxDispatcher>();
 
         return services;

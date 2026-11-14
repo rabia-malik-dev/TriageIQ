@@ -2,12 +2,14 @@ using Microsoft.Extensions.Logging;
 using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Application.Exceptions;
 using TriageIQ.Application.Messaging;
+using TriageIQ.Application.Triage;
 using TriageIQ.Domain.Enums;
 
 namespace TriageIQ.Application.Tickets;
 
 public sealed class TicketIngestionService(
     ITicketRepository tickets,
+    TicketTriageService triage,
     ILogger<TicketIngestionService> logger)
 {
     public async Task ProcessTicketReceivedAsync(
@@ -32,5 +34,7 @@ public sealed class TicketIngestionService(
             "Ticket {TicketId} queued for triage (correlation {CorrelationId})",
             ticket.Id,
             message.CorrelationId);
+
+        await triage.RunAsync(ticket.Id, message.CorrelationId, cancellationToken);
     }
 }
