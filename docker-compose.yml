@@ -71,6 +71,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Default: Server=sqlserver,1433;Database=TriageIQ;User Id=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
       ServiceBus__EmulatorHealthUrl: http://servicebus-emulator:5300/health
     depends_on:
       sqlserver:
