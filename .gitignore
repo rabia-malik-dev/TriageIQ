@@ -22,8 +22,8 @@ web/.angular/
 appsettings.*.local.json
 
 # Private study material (M9)
-study-guides/
-study/
+/study-guides/
+/study/
 
 # Test / tooling
 TestResults/
