@@ -1,0 +1,1 @@
+﻿Console.WriteLine("TriageIQ.Evals scaffold (evaluation harness ships in M6).");
