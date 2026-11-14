@@ -2,6 +2,7 @@ using TriageIQ.Api.Middleware;
 using TriageIQ.Api.OpenApi;
 using TriageIQ.Application;
 using TriageIQ.Infrastructure;
+using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,12 @@ if (!app.Environment.IsEnvironment("Testing")
         app.Configuration,
         app.Environment,
         CancellationToken.None);
+
+    await using (var scope = app.Services.CreateAsyncScope())
+    {
+        var prompts = scope.ServiceProvider.GetRequiredService<IPromptVersionRepository>();
+        await prompts.EnsureDefaultSeedAsync(CancellationToken.None);
+    }
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
