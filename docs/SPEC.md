@@ -35,7 +35,7 @@ Publishing rules: section 11 (GitHub, commit identity). Private study guides: se
 | Backend | Latest LTS .NET, nullable, warnings as errors; ASP.NET Core controllers; EF Core; FluentValidation; Polly; OpenAPI |
 | Worker | .NET Worker Service (`BackgroundService`) |
 | Messaging | Azure Service Bus `tickets.incoming` + DLQ; emulator in Docker; `IMessageBus` abstraction |
-| LLM | Claude via `ILlmClient` + `FakeLlmClient`; config/env only for keys and models |
+| LLM | Claude via `ILlmClient`; local development provider by default; config/env for keys and models |
 | Database | SQL Server 2022 in Docker; EF migrations |
 | Frontend | Angular (standalone, signals, strict TS); Chart.js; Material or Bootstrap |
 | Auth | JWT; `PasswordHasher`; role-based auth |
@@ -43,7 +43,7 @@ Publishing rules: section 11 (GitHub, commit identity). Private study guides: se
 | Testing | xUnit, FluentAssertions, NSubstitute, Testcontainers, WebApplicationFactory, Playwright |
 | DevOps | Docker Compose; GitHub Actions; GHCR; Bicep (stretch) |
 
-**Setup:** clone → copy `.env.example` → `.env` → API key or `LLM_PROVIDER=fake` → `docker compose up`.
+**Setup:** clone → copy `.env.example` → `.env` → `LLM_PROVIDER=local` (or cloud API key when enabled) → `docker compose up`.
 
 ---
 

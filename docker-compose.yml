@@ -74,8 +74,8 @@ services:
       Jwt__SigningKey: ${JWT_SIGNING_KEY}
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
-      Llm__Provider: ${LLM_PROVIDER:-fake}
-      Llm__Model: fake-triage-v1
+      Llm__Provider: ${LLM_PROVIDER:-local}
+      Llm__Model: triage-local-v1
       Triage__ConfidenceThreshold: 0.85
       ServiceBus__EmulatorHealthUrl: http://servicebus-emulator:5300/health
       ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
@@ -98,8 +98,8 @@ services:
       ConnectionStrings__Default: Server=sqlserver,1433;Database=TriageIQ;User Id=sa;Password=${SQLSERVER_SA_PASSWORD};TrustServerCertificate=True
       ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
       ServiceBus__IncomingQueueName: tickets.incoming
-      Llm__Provider: ${LLM_PROVIDER:-fake}
-      Llm__Model: fake-triage-v1
+      Llm__Provider: ${LLM_PROVIDER:-local}
+      Llm__Model: triage-local-v1
       Triage__ConfidenceThreshold: 0.85
     depends_on:
       sqlserver:

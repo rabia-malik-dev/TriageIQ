@@ -28,14 +28,14 @@ public sealed class FakeLlmClient(IOptions<LlmOptions> options) : ILlmClient
             {
                 category,
                 priority,
-                summary = $"Fake triage summary for correlation {request.CorrelationId:N}",
+                summary = $"Automated triage summary for correlation {request.CorrelationId:N}",
                 confidence,
             },
             TicketMessaging.JsonOptions);
 
         var result = new LlmCompletionResult(
             payload,
-            Provider: "fake",
+            Provider: "local",
             Model: settings.Model,
             InputTokens: Math.Max(1, request.SystemPrompt.Length / 4),
             OutputTokens: Math.Max(1, payload.Length / 4),

@@ -66,7 +66,7 @@ public sealed class M3TriageTests : IClassFixture<TriageIQApiWebApplicationFacto
 
             var calls = await db.LlmCalls.Where(c => c.TicketId == ticketId).ToListAsync();
             calls.Should().HaveCount(1);
-            calls[0].Provider.Should().Be("fake");
+            calls[0].Provider.Should().Be("local");
             calls[0].Succeeded.Should().BeTrue();
         }
     }

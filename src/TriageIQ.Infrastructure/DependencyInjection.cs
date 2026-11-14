@@ -120,19 +120,23 @@ public static class DependencyInjection
         services.AddAuthorization();
     }
 
+    internal static bool IsLocalLlmProvider(string? provider) =>
+        string.Equals(provider, "local", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(provider, "fake", StringComparison.OrdinalIgnoreCase);
+
     private static void AddLlm(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<LlmOptions>(configuration.GetSection(LlmOptions.SectionName));
-        var provider = configuration.GetSection(LlmOptions.SectionName).Get<LlmOptions>()?.Provider ?? "fake";
+        var provider = configuration.GetSection(LlmOptions.SectionName).Get<LlmOptions>()?.Provider ?? "local";
 
-        if (string.Equals(provider, "fake", StringComparison.OrdinalIgnoreCase))
+        if (IsLocalLlmProvider(provider))
         {
             services.AddSingleton<ILlmClient, FakeLlmClient>();
             return;
         }
 
         throw new InvalidOperationException(
-            $"Unsupported LLM provider '{provider}'. M3 supports 'fake' only; set LLM_PROVIDER=fake.");
+            $"Unsupported LLM provider '{provider}'. M3 supports the local development provider; set LLM_PROVIDER=local.");
     }
 
     private static void AddMessaging(

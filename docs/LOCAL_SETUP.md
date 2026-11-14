@@ -135,16 +135,16 @@ After creating a ticket in Swagger:
 After M2 flow completes (ticket reaches worker):
 
 1. **Swagger:** **GET /api/tickets/{ticketId}/analysis** (same JWT as ticket create).
-2. Expect JSON with `category`, `priority`, `summary`, `confidence`, `provider: fake`.
+2. Expect JSON with `category`, `priority`, `summary`, `confidence`, and provider **`local`** (development stub—no cloud API).
 3. **SQL:**
    ```sql
    SELECT Id, Status, BodyRedacted FROM Tickets WHERE Id = '<ticket-id>';
    SELECT Category, Confidence, RoutingDecision FROM TicketAnalyses;
    SELECT Provider, Model, InputTokens, OutputTokens FROM LlmCalls;
    ```
-4. Subject contains **payment** → fake client often returns `billing` + higher confidence (`AutoApproved` if ≥ 0.85).
+4. Subject contains **payment** → local development provider typically returns `billing` + higher confidence (`AutoApproved` if ≥ 0.85).
 
-Set `LLM_PROVIDER=fake` in `.env` (default). No API key required for M3.
+Default: `LLM_PROVIDER=local` in `.env`. No external API key required for local Docker.
 
 ## 11. What is not available yet
 
