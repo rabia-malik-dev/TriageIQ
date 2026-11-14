@@ -11,6 +11,12 @@ public sealed class TriageIQDbContext(DbContextOptions<TriageIQDbContext> option
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+    public DbSet<PromptVersion> PromptVersions => Set<PromptVersion>();
+
+    public DbSet<TicketAnalysis> TicketAnalyses => Set<TicketAnalysis>();
+
+    public DbSet<LlmCall> LlmCalls => Set<LlmCall>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TriageIQDbContext).Assembly);

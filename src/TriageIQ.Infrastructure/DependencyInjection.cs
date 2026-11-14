@@ -10,7 +10,10 @@ using TriageIQ.Application.Abstractions;
 using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Application.Abstractions.Security;
 using TriageIQ.Application.Abstractions.Messaging;
+using TriageIQ.Application.Abstractions.Llm;
+using TriageIQ.Application.Triage;
 using TriageIQ.Infrastructure.Health;
+using TriageIQ.Infrastructure.Llm;
 using TriageIQ.Infrastructure.Messaging;
 using TriageIQ.Infrastructure.Persistence;
 using TriageIQ.Infrastructure.Persistence.Repositories;
@@ -37,6 +40,9 @@ public static class DependencyInjection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
+            services.AddScoped<IPromptVersionRepository, PromptVersionRepository>();
+            services.AddScoped<ITriagePersistence, TriagePersistence>();
+            services.AddScoped<ITicketAnalysisReadRepository, TicketAnalysisReadRepository>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
@@ -54,6 +60,10 @@ public static class DependencyInjection
 
         AddHealthChecks(services, configuration, environment);
         AddMessaging(services, configuration, environment);
+        AddLlm(services, configuration);
+
+        services.AddOptions<TriageOptions>()
+            .Bind(configuration.GetSection(TriageOptions.SectionName));
 
         return services;
     }
@@ -108,6 +118,21 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+    }
+
+    private static void AddLlm(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<LlmOptions>(configuration.GetSection(LlmOptions.SectionName));
+        var provider = configuration.GetSection(LlmOptions.SectionName).Get<LlmOptions>()?.Provider ?? "fake";
+
+        if (string.Equals(provider, "fake", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddSingleton<ILlmClient, FakeLlmClient>();
+            return;
+        }
+
+        throw new InvalidOperationException(
+            $"Unsupported LLM provider '{provider}'. M3 supports 'fake' only; set LLM_PROVIDER=fake.");
     }
 
     private static void AddMessaging(

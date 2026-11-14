@@ -1,5 +1,6 @@
 using TriageIQ.Application;
 using TriageIQ.Infrastructure;
+using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Infrastructure.Persistence;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -13,6 +14,10 @@ var host = builder.Build();
 if (builder.Configuration.GetConnectionString("Default") is { Length: > 0 })
 {
     await host.Services.ApplyMigrationsAsync(CancellationToken.None);
+
+    await using var scope = host.Services.CreateAsyncScope();
+    var prompts = scope.ServiceProvider.GetRequiredService<IPromptVersionRepository>();
+    await prompts.EnsureDefaultSeedAsync(CancellationToken.None);
 }
 
 host.Run();
