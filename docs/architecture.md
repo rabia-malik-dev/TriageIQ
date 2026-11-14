@@ -1,4 +1,4 @@
-# Architecture (M0)
+# Architecture
 
 TriageIQ uses a layered backend under `src/`:
 
@@ -7,7 +7,7 @@ TriageIQ uses a layered backend under `src/`:
 | Domain | `TriageIQ.Domain` | Entities and value objects (empty in M0) |
 | Application | `TriageIQ.Application` | Use cases, interfaces (`IClock` in M0) |
 | Infrastructure | `TriageIQ.Infrastructure` | External systems, health checks, DI wiring |
-| API | `TriageIQ.Api` | HTTP controllers, OpenAPI |
+| API | `TriageIQ.Api` | HTTP controllers, OpenAPI, Swagger UI (Development) |
 | Worker | `TriageIQ.Worker` | Background processing (scaffold in M0) |
 | Evals | `TriageIQ.Evals` | Evaluation CLI (scaffold; M6) |
 
@@ -20,6 +20,8 @@ TriageIQ uses a layered backend under `src/`:
 - **api** — ASP.NET Core API on port 8080
 - **worker** — placeholder worker process
 
-The API readiness probe checks SQL Server and the emulator health URL when configured.
+The API readiness probe checks SQL Server and the Service Bus emulator health URL when configured.
+
+**M1:** JWT auth, users, tickets (EF migrations on startup). **Development:** Swagger at `/swagger` — see [LOCAL_SETUP.md](./LOCAL_SETUP.md).
 
 Full message flow and components are defined in [SPEC.md](./SPEC.md).

@@ -2,11 +2,12 @@
 
 Event-driven AI ticket triage platform with guardrails, human review, and automated evaluation (.NET, Angular, Azure Service Bus, SQL Server, OpenTelemetry).
 
-**Status:** Milestone M0 (foundation). Ticket ingestion, AI triage, and the Angular UI arrive in later milestones.
+**Status:** Milestone M1 (auth + tickets). Messaging and AI triage arrive in M2+.
 
-Full product specification: [docs/SPEC.md](docs/SPEC.md).
+Full product specification: [docs/SPEC.md](docs/SPEC.md).  
+**Step-by-step local run and Swagger testing:** [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
 
-## Architecture (M0)
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -20,49 +21,53 @@ flowchart LR
 ## Tech stack
 
 - **Backend:** .NET 10 (LTS), ASP.NET Core Web API, layered projects (Domain → Application → Infrastructure)
-- **Data:** SQL Server 2022 (Docker)
-- **Messaging:** Azure Service Bus emulator (Docker), queue `tickets.incoming` in config
-- **Tests:** xUnit, FluentAssertions, NSubstitute, WebApplicationFactory
+- **Data:** SQL Server 2022 (Docker), EF Core migrations
+- **Messaging:** Azure Service Bus emulator (Docker), queue `tickets.incoming`
+- **API docs:** Swagger UI in Development (`/swagger`), OpenAPI at `/openapi/v1.json`
+- **Tests:** xUnit, FluentAssertions, WebApplicationFactory
 
-## Prerequisites
+---
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) with Compose v2
+## Complete setup (Docker) — quick checklist
 
-## Quick start
+| Step | Action |
+|------|--------|
+| 1 | Install **Docker Desktop** and start it |
+| 2 | `cd C:\Users\rmalik\TriageIQ` |
+| 3 | `copy .env.example .env` and set `JWT_SIGNING_KEY` (32+ chars) + seed admin vars |
+| 4 | `docker compose up --build -d` |
+| 5 | Browser: http://localhost:8080/health/ready → **Healthy** |
+| 6 | Browser: http://localhost:8080/swagger → test register / login / tickets |
+| 7 | (Optional) `dotnet test TriageIQ.slnx -c Release` |
 
-```bash
-cd C:\Users\rmalik\TriageIQ
-copy .env.example .env
-docker compose up --build
-```
+Detailed instructions, JWT authorize flow, and reviewer ticket test: **[docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md)**.
 
-Verify health:
+---
 
-```bash
-curl http://localhost:8080/health/live
-curl http://localhost:8080/health/ready
-```
+## URLs at a glance (port 8080)
 
-When SQL Server and the Service Bus emulator are healthy, `/health/ready` returns HTTP 200.
+| What | URL | Notes |
+|------|-----|--------|
+| Swagger UI | http://localhost:8080/swagger | **Use this** for POST + JWT |
+| Health live | http://localhost:8080/health/live | GET in browser OK |
+| Health ready | http://localhost:8080/health/ready | GET in browser OK |
+| OpenAPI JSON | http://localhost:8080/openapi/v1.json | Spec only |
+| REST API | http://localhost:8080/api/... | Via Swagger or REST client |
 
-## Run tests locally
+Paste-only browser URLs **do not** work for `POST /api/auth/register` (you will see **405**). That is expected.
+
+---
+
+## Run tests
 
 ```bash
 dotnet test TriageIQ.slnx --configuration Release
 ```
 
-Integration tests use the `Testing` environment and do not require Docker.
-
-## Evaluation
-
-The evaluation harness and dataset ship in **M6**. The `TriageIQ.Evals` project is a placeholder in M0.
-
 ## Repository hygiene
 
 - Copy `.env.example` to `.env`; never commit secrets.
 - Enable git hooks: `git config core.hooksPath .githooks` (see [CONTRIBUTING.md](CONTRIBUTING.md)).
-- Study guide material (M9) lives only under ignored `study/` and `study-guides/` paths.
 
 ## License
 
