@@ -2,7 +2,7 @@
 
 Event-driven AI ticket triage platform with guardrails, human review, and automated evaluation (.NET, Angular, Azure Service Bus, SQL Server, OpenTelemetry).
 
-**Status:** Milestone M1 (auth + tickets). Messaging and AI triage arrive in M2+.
+**Status:** Milestone M2 (outbox + worker messaging). AI triage arrives in M3+.
 
 Full product specification: [docs/SPEC.md](docs/SPEC.md).  
 **Step-by-step local run and Swagger testing:** [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
