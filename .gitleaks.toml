@@ -1,0 +1,7 @@
+title = "TriageIQ gitleaks config"
+
+[allowlist]
+description = "Synthetic JWT keys in test factories are not real secrets."
+paths = [
+  '''tests/.+''',
+]

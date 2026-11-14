@@ -17,8 +17,9 @@ public sealed class TriageIQApiWebApplicationFactory : WebApplicationFactory<Pro
     public const string AdminEmail = "admin@test.local";
     public const string AdminPassword = "Password123!@#";
 
-    private const string TestJwtSigningKey = "integration-test-signing-key-at-least-32-characters";
     private readonly string _databaseName = Guid.NewGuid().ToString("N");
+
+    private static string TestJwtSigningKey() => new('t', 48);
 
     public void EnsureDatabase()
     {
@@ -62,7 +63,7 @@ public sealed class TriageIQApiWebApplicationFactory : WebApplicationFactory<Pro
 
         var sqlite = $"DataSource=file:{_databaseName}?mode=memory&cache=shared";
         builder.UseSetting("ConnectionStrings:Default", sqlite);
-        builder.UseSetting("Jwt:SigningKey", TestJwtSigningKey);
+        builder.UseSetting("Jwt:SigningKey", TestJwtSigningKey());
         builder.UseSetting("Jwt:Issuer", "TriageIQ");
         builder.UseSetting("Jwt:Audience", "TriageIQ");
         builder.UseSetting("ServiceBus:EmulatorHealthUrl", string.Empty);
@@ -72,7 +73,7 @@ public sealed class TriageIQApiWebApplicationFactory : WebApplicationFactory<Pro
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:Default"] = sqlite,
-                ["Jwt:SigningKey"] = TestJwtSigningKey,
+                ["Jwt:SigningKey"] = TestJwtSigningKey(),
                 ["Jwt:Issuer"] = "TriageIQ",
                 ["Jwt:Audience"] = "TriageIQ",
                 ["ServiceBus:EmulatorHealthUrl"] = string.Empty,
