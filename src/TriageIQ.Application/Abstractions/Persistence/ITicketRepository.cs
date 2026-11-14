@@ -10,7 +10,12 @@ public interface ITicketRepository
 
     Task<Ticket?> FindByIdAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<Ticket> GetOrCreateAsync(Ticket ticket, CancellationToken cancellationToken);
+    Task<Ticket?> FindByIdForUpdateAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<TicketCreateResult> GetOrCreateAsync(
+        Ticket ticket,
+        OutboxMessage outboxForNewTicket,
+        CancellationToken cancellationToken);
 
     Task SaveChangesAsync(CancellationToken cancellationToken);
 
@@ -18,6 +23,8 @@ public interface ITicketRepository
         TicketSearchCriteria criteria,
         CancellationToken cancellationToken);
 }
+
+public sealed record TicketCreateResult(Ticket Ticket, bool IsNew);
 
 public sealed record TicketSearchCriteria(
     TicketStatus? Status,

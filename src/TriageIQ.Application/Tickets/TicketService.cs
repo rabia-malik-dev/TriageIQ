@@ -2,6 +2,7 @@ using TriageIQ.Application.Abstractions;
 using TriageIQ.Application.Abstractions.Persistence;
 using TriageIQ.Application.Common;
 using TriageIQ.Application.Exceptions;
+using TriageIQ.Application.Messaging;
 using TriageIQ.Domain.Entities;
 using TriageIQ.Domain.Enums;
 
@@ -29,8 +30,19 @@ public sealed class TicketService(
             CreatedAt = clock.UtcNow,
         };
 
-        var stored = await tickets.GetOrCreateAsync(ticket, cancellationToken);
-        return MapToDto(stored);
+        var outbox = new OutboxMessage
+        {
+            Id = Guid.NewGuid(),
+            TicketId = ticket.Id,
+            CorrelationId = correlationId,
+            MessageType = TicketMessaging.TicketReceivedType,
+            PayloadJson = TicketMessaging.BuildTicketReceivedPayload(ticket),
+            Status = OutboxMessageStatus.Pending,
+            CreatedAt = clock.UtcNow,
+        };
+
+        var result = await tickets.GetOrCreateAsync(ticket, outbox, cancellationToken);
+        return MapToDto(result.Ticket);
     }
 
     public async Task<IReadOnlyList<TicketDto>> CreateBulkAsync(
