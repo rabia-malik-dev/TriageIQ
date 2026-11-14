@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TriageIQ.Api/TriageIQ.Api.csproj" />
+    <Project Path="src/TriageIQ.Application/TriageIQ.Application.csproj" />
+    <Project Path="src/TriageIQ.Domain/TriageIQ.Domain.csproj" />
+    <Project Path="src/TriageIQ.Evals/TriageIQ.Evals.csproj" />
+    <Project Path="src/TriageIQ.Infrastructure/TriageIQ.Infrastructure.csproj" />
+    <Project Path="src/TriageIQ.Worker/TriageIQ.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TriageIQ.IntegrationTests/TriageIQ.IntegrationTests.csproj" />
+    <Project Path="tests/TriageIQ.UnitTests/TriageIQ.UnitTests.csproj" />
+  </Folder>
+</Solution>
