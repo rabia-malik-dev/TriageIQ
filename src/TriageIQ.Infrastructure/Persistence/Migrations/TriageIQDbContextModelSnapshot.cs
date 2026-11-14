@@ -242,6 +242,10 @@ namespace TriageIQ.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ReviewReason")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
                     b.Property<string>("RoutingDecision")
                         .IsRequired()
                         .HasMaxLength(32)

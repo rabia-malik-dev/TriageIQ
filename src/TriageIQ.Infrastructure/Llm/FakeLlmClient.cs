@@ -12,6 +12,8 @@ public sealed class FakeLlmClient(IOptions<LlmOptions> options) : ILlmClient
         CancellationToken cancellationToken)
     {
         var settings = options.Value;
+        var isRepair = request.SystemPrompt.Contains("Fix the prior model output", StringComparison.Ordinal);
+
         var confidence = request.UserPrompt.Contains("urgent", StringComparison.OrdinalIgnoreCase)
             || request.UserPrompt.Contains("critical", StringComparison.OrdinalIgnoreCase)
             ? 0.92m
@@ -21,7 +23,11 @@ public sealed class FakeLlmClient(IOptions<LlmOptions> options) : ILlmClient
             ? "billing"
             : "general";
 
-        var priority = confidence >= 0.9m ? "high" : "medium";
+        var priority = isRepair ? "medium" : confidence >= 0.9m ? "high" : "medium";
+        if (isRepair)
+        {
+            confidence = 0.8m;
+        }
 
         var payload = JsonSerializer.Serialize(
             new

@@ -146,9 +146,17 @@ After M2 flow completes (ticket reaches worker):
 
 Default: `LLM_PROVIDER=local` in `.env`. No external API key required for local Docker.
 
-## 11. What is not available yet
+## 11. M4 — guardrails
 
-- **M4+:** strict guardrails, real Anthropic provider, Angular UI.
+After triage runs:
+
+1. **Swagger:** **GET /api/tickets/{ticketId}/analysis** includes `reviewReason` when routing is not a clean auto-approve (e.g. `low_confidence`, `cost_budget_exceeded`).
+2. **Injection test:** create a ticket whose body contains `ignore previous instructions` — worker should set status **NeedsReview**, `reviewReason` = `prompt_injection`, and `LlmCalls.Provider` = `guardrail` (no LLM call).
+3. **Config:** `Triage__MaxEstimatedCostUsd` (default `0.25`) alongside `Triage__ConfidenceThreshold` in Docker / `appsettings`.
+
+## 12. What is not available yet
+
+- **M5+:** Angular review UI, real Anthropic provider, eval harness.
 - Swagger is **not** enabled in production; only Development/Docker local stack.
 
 See [SPEC.md](./SPEC.md) for the full milestone plan.

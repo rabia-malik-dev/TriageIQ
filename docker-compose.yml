@@ -77,6 +77,7 @@ services:
       Llm__Provider: ${LLM_PROVIDER:-local}
       Llm__Model: triage-local-v1
       Triage__ConfidenceThreshold: 0.85
+      Triage__MaxEstimatedCostUsd: 0.25
       ServiceBus__EmulatorHealthUrl: http://servicebus-emulator:5300/health
       ServiceBus__ConnectionString: Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=local-dev-not-a-real-secret;UseDevelopmentEmulator=true;
       ServiceBus__IncomingQueueName: tickets.incoming
@@ -101,6 +102,7 @@ services:
       Llm__Provider: ${LLM_PROVIDER:-local}
       Llm__Model: triage-local-v1
       Triage__ConfidenceThreshold: 0.85
+      Triage__MaxEstimatedCostUsd: 0.25
     depends_on:
       sqlserver:
         condition: service_healthy

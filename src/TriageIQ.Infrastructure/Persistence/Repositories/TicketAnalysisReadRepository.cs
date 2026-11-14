@@ -42,5 +42,6 @@ public sealed class TicketAnalysisReadRepository(TriageIQDbContext db) : ITicket
             call.OutputTokens,
             call.LatencyMs,
             call.EstimatedCostUsd,
+            analysis.ReviewReason,
             analysis.CreatedAt);
 }

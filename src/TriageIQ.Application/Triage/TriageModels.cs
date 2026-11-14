@@ -22,4 +22,5 @@ public sealed record TicketAnalysisDto(
     int OutputTokens,
     int LatencyMs,
     decimal EstimatedCostUsd,
+    string? ReviewReason,
     DateTimeOffset CreatedAt);

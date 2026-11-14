@@ -24,6 +24,8 @@ public sealed class TicketAnalysis
 
     public required string RawResponseJson { get; set; }
 
+    public string? ReviewReason { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; }
 
     public Ticket? Ticket { get; set; }

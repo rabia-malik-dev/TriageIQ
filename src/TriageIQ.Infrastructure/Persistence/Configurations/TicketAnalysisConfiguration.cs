@@ -16,6 +16,7 @@ public sealed class TicketAnalysisConfiguration : IEntityTypeConfiguration<Ticke
         builder.Property(a => a.Confidence).HasPrecision(5, 4);
         builder.Property(a => a.RoutingDecision).HasConversion<string>().HasMaxLength(32);
         builder.Property(a => a.RawResponseJson).IsRequired();
+        builder.Property(a => a.ReviewReason).HasMaxLength(512);
         builder.HasIndex(a => a.TicketId);
         builder.HasOne(a => a.Ticket).WithMany().HasForeignKey(a => a.TicketId);
     }

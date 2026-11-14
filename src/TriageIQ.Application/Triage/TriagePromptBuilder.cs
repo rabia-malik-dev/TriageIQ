@@ -10,6 +10,12 @@ public static class TriagePromptBuilder
         category, priority (low|medium|high|critical), summary, confidence (0-1).
         """;
 
+    public const string RepairSystemPrompt =
+        """
+        Fix the prior model output. Respond with JSON only using:
+        category, priority (low|medium|high|critical), summary, confidence (0-1).
+        """;
+
     public static string BuildUserPrompt(PromptVersion promptVersion, string subject, string redactedBody, string source) =>
         promptVersion.Template
             .Replace("{{subject}}", subject, StringComparison.Ordinal)
