@@ -15,6 +15,7 @@ public sealed class TriageIQWebApplicationFactory : WebApplicationFactory<Progra
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:Default"] = string.Empty,
+                ["Jwt:SigningKey"] = string.Empty,
                 ["ServiceBus:EmulatorHealthUrl"] = string.Empty,
             });
         });
